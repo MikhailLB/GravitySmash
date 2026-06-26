@@ -54,10 +54,11 @@ flutter:
     - assets/flow/Horizontal_Notifications_Screen.webp
     - assets/flow/app_icon.png
     - assets/flow/app_icon_adaptive.png
+    - assets/flow/app_icon_safe.png
 
 flutter_launcher_icons:
   android: true
   image_path: assets/flow/app_icon.png
   adaptive_icon_background: "#050A1A"
-  adaptive_icon_foreground: assets/flow/app_icon.png
+  adaptive_icon_foreground: assets/flow/app_icon_safe.png
   min_sdk_android: 21

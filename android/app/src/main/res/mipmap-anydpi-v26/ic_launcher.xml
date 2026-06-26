@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Adaptive icon (API 26+).
-     The foreground uses a 20% inset from each edge so the image content
-     sits comfortably inside Android's safe-zone circle (which clips the
-     outer ~18 % in every adaptive shape — circle, squircle, teardrop, etc).
-     Background is the brand dark-navy so corner bleed looks intentional. -->
+     The foreground PNG already has a 20 % transparent border on every
+     side so the icon content is fully inside Android's safe-zone circle.
+     No additional XML inset is needed — adding one would make the icon
+     appear too small. Background is the brand dark-navy. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
   <background android:drawable="@color/ic_launcher_background"/>
-  <foreground>
-    <inset
-        android:drawable="@drawable/ic_launcher_foreground"
-        android:inset="20%" />
-  </foreground>
+  <foreground android:drawable="@drawable/ic_launcher_foreground"/>
 </adaptive-icon>
