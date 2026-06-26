@@ -63,8 +63,8 @@ class _OfflineGuardPageState extends State<OfflineGuardPage>
     final size = MediaQuery.of(context).size;
     final isLandscape = size.width > size.height;
     final asset = isLandscape
-        ? 'assets/flow/Horizontal_Nowifi_Screen.png'
-        : 'assets/flow/Vertical_Nowifi_Screen.png';
+        ? 'assets/flow/Horizontal_Nowifi_Screen.webp'
+        : 'assets/flow/Vertical_Nowifi_Screen.webp';
 
     return Scaffold(
       backgroundColor: const Color(0xFF050A1A),

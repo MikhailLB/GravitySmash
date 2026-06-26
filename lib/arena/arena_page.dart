@@ -628,7 +628,7 @@ class _GameScreenState extends State<GameScreen>
               fit: StackFit.expand,
               children: [
                 Image.asset(
-                  'assets/gravity_smash_space_background.png',
+                  'assets/gravity_smash_space_background.webp',
                   fit: BoxFit.cover,
                 ),
                 CustomPaint(
@@ -1217,7 +1217,7 @@ class _SpaceScaffold extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          'assets/gravity_smash_space_background.png',
+          'assets/gravity_smash_space_background.webp',
           fit: BoxFit.cover,
         ),
         DecoratedBox(

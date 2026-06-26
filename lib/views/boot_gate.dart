@@ -296,8 +296,8 @@ class _BootGateState extends State<BootGate> {
     // Restore the original white-part splash images so the loading
     // screen looks exactly as designed in the arena (white) branch.
     final asset = isLandscape
-        ? 'assets/gravity_smash_splash_landscape.png'
-        : 'assets/gravity_smash_splash_portrait.png';
+        ? 'assets/gravity_smash_splash_landscape.webp'
+        : 'assets/gravity_smash_splash_portrait.webp';
 
     return Scaffold(
       backgroundColor: Colors.black,

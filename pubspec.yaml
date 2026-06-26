@@ -41,17 +41,17 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/gravity_smash_splash_portrait.png
-    - assets/gravity_smash_splash_landscape.png
-    - assets/gravity_smash_space_background.png
-    - assets/gravity_smash_spritesheet.png
+    - assets/gravity_smash_splash_portrait.webp
+    - assets/gravity_smash_splash_landscape.webp
+    - assets/gravity_smash_space_background.webp
+    - assets/gravity_smash_spritesheet.webp
     - assets/gravity_smash_app_icon.png
-    - assets/flow/Vertical_Loading_Screen.png
-    - assets/flow/Horizontal_Loading_Screen.png
-    - assets/flow/Vertical_Nowifi_Screen.png
-    - assets/flow/Horizontal_Nowifi_Screen.png
-    - assets/flow/Vertical_Notifications_Screen.png
-    - assets/flow/Horizontal_Notifications_Screen.png
+    - assets/flow/Vertical_Loading_Screen.webp
+    - assets/flow/Horizontal_Loading_Screen.webp
+    - assets/flow/Vertical_Nowifi_Screen.webp
+    - assets/flow/Horizontal_Nowifi_Screen.webp
+    - assets/flow/Vertical_Notifications_Screen.webp
+    - assets/flow/Horizontal_Notifications_Screen.webp
     - assets/flow/app_icon.png
     - assets/flow/app_icon_adaptive.png
 

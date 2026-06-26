@@ -105,8 +105,8 @@ class _PushOptInPageState extends State<PushOptInPage>
     final size = MediaQuery.of(context).size;
     final isLandscape = size.width > size.height;
     final asset = isLandscape
-        ? 'assets/flow/Horizontal_Notifications_Screen.png'
-        : 'assets/flow/Vertical_Notifications_Screen.png';
+        ? 'assets/flow/Horizontal_Notifications_Screen.webp'
+        : 'assets/flow/Vertical_Notifications_Screen.webp';
 
     return Scaffold(
       backgroundColor: const Color(0xFF050A1A),
