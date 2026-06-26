@@ -222,50 +222,64 @@ class _OrbitWebShellState extends State<OrbitWebShell>
     _pivotToOffline();
   }
 
+  // Exact copy of the keyboard scroll fix from AdventureRoad/content_screen.dart.
+  // IMPORTANT: behavior must be 'auto', NOT 'smooth' — smooth scroll conflicts
+  // with the keyboard animation on Android and causes visible jitter.
+  // Single setTimeout at 350ms — not multiple at 250/500/800ms.
   void _injectKeyboardFollower() {
     _ctrl.runJavaScript('''
 (function() {
-  if (window.__gsKbFollow) return;
-  window.__gsKbFollow = true;
-  function isEditable(el) {
+  if (window.__kbScrollFixApplied) return;
+  window.__kbScrollFixApplied = true;
+
+  function isInput(el) {
     return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
   }
-  function recenter() {
+
+  function doScroll() {
     var el = document.activeElement;
-    if (!isEditable(el)) return;
+    if (!isInput(el)) return;
     var vp = window.visualViewport;
     if (vp) {
       var rect = el.getBoundingClientRect();
-      var bottom = vp.offsetTop + vp.height;
-      if (rect.bottom > bottom - 18 || rect.top < vp.offsetTop) {
+      var vpBottom = vp.offsetTop + vp.height;
+      if (rect.bottom > vpBottom - 20 || rect.top < vp.offsetTop) {
         el.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     } else {
       el.scrollIntoView({ behavior: 'auto', block: 'nearest' });
     }
   }
+
   document.addEventListener('focusin', function(e) {
-    if (isEditable(e.target)) setTimeout(recenter, 350);
+    if (isInput(e.target)) {
+      setTimeout(doScroll, 350);
+    }
   });
+
   if (window.visualViewport) {
-    var prev = window.visualViewport.height;
+    var prevH = window.visualViewport.height;
     window.visualViewport.addEventListener('resize', function() {
       var h = window.visualViewport.height;
-      if (h < prev) setTimeout(recenter, 120);
-      prev = h;
+      if (h < prevH) { setTimeout(doScroll, 120); }
+      prevH = h;
     });
   }
 })();
 ''');
   }
 
+  // Exact copy of safeAreaKill from AdventureRoad — NO keyboardOpen guard
+  // (that guard was incorrectly causing the CSS to be skipped mid-session
+  // on some Android OEM WebViews, leaving white bars visible).
   void _injectSafeAreaKill() {
     _ctrl.runJavaScript(r'''
 (function() {
-  if (window.__gsSafeArea) return;
-  window.__gsSafeArea = true;
-  var STYLE_ID = '__gsSafeAreaStyles';
-  var CSS_BODY =
+  if (window.__flsaRunning) return;
+  window.__flsaRunning = true;
+
+  var CSS_ID = '__flsa';
+  var CSS_TEXT =
     ':root{' +
       '--safe-area-inset-top:0px!important;' +
       '--safe-area-inset-right:0px!important;' +
@@ -283,41 +297,39 @@ class _OrbitWebShellState extends State<OrbitWebShell>
       'padding-right:0!important;' +
       'margin-top:0!important;' +
     '}';
-  function keyboardOpen() {
-    if (!window.visualViewport) return false;
-    return window.visualViewport.height < window.innerHeight * 0.75;
-  }
+
   function apply() {
-    if (keyboardOpen()) return;
     var head = document.head || document.documentElement;
     if (!head) return;
-    var meta = document.querySelector('meta[name="viewport"]');
-    if (meta && !/viewport-fit\s*=\s*contain/i.test(meta.getAttribute('content') || '')) {
-      var raw = (meta.getAttribute('content') || '')
+    var m = document.querySelector('meta[name="viewport"]');
+    if (m && !/viewport-fit\s*=\s*contain/i.test(m.getAttribute('content') || '')) {
+      var c = (m.getAttribute('content') || '')
         .replace(/,?\s*viewport-fit\s*=\s*\w+/ig, '').trim();
-      meta.setAttribute('content', raw + (raw ? ', ' : '') + 'viewport-fit=contain');
+      m.setAttribute('content', c + (c ? ', ' : '') + 'viewport-fit=contain');
     }
-    var node = document.getElementById(STYLE_ID);
-    if (!node) {
-      node = document.createElement('style');
-      node.id = STYLE_ID;
-      head.appendChild(node);
+    var s = document.getElementById(CSS_ID);
+    if (!s) {
+      s = document.createElement('style');
+      s.id = CSS_ID;
+      head.appendChild(s);
     }
-    if (node.textContent !== CSS_BODY) node.textContent = CSS_BODY;
-    if (head.lastElementChild !== node) head.appendChild(node);
+    if (s.textContent !== CSS_TEXT) s.textContent = CSS_TEXT;
+    if (head.lastElementChild !== s) head.appendChild(s);
   }
+
   apply();
+
   ['pushState', 'replaceState'].forEach(function(fn) {
     var orig = history[fn];
     history[fn] = function() {
       var r = orig.apply(this, arguments);
       setTimeout(apply, 80);
-      setTimeout(apply, 360);
+      setTimeout(apply, 400);
       return r;
     };
   });
   window.addEventListener('popstate', function() { setTimeout(apply, 80); });
-  setInterval(apply, 2600);
+  setInterval(apply, 2500);
 })();
 ''');
   }
@@ -351,13 +363,6 @@ class _OrbitWebShellState extends State<OrbitWebShell>
   Widget build(BuildContext context) {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    final viewPadding = MediaQuery.of(context).viewPadding;
-    final EdgeInsets shellPadding = isLandscape
-        ? EdgeInsets.only(
-            left: viewPadding.left,
-            right: viewPadding.right,
-          )
-        : EdgeInsets.only(top: viewPadding.top);
 
     return PopScope(
       canPop: false,
@@ -371,7 +376,14 @@ class _OrbitWebShellState extends State<OrbitWebShell>
           fit: StackFit.expand,
           children: [
             Padding(
-              padding: shellPadding,
+              // Apply status bar height in portrait; none in landscape
+              // (immersive mode hides the status bar in landscape).
+              // Exactly matches the AdventureRoad content_screen pattern.
+              padding: EdgeInsets.only(
+                top: isLandscape
+                    ? 0
+                    : MediaQuery.of(context).viewPadding.top,
+              ),
               child: WebViewWidget(controller: _ctrl),
             ),
             if (_busy)

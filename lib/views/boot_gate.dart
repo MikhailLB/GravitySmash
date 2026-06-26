@@ -293,23 +293,23 @@ class _BootGateState extends State<BootGate> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isLandscape = size.width > size.height;
+    // Restore the original white-part splash images so the loading
+    // screen looks exactly as designed in the arena (white) branch.
     final asset = isLandscape
-        ? 'assets/flow/Horizontal_Loading_Screen.png'
-        : 'assets/flow/Vertical_Loading_Screen.png';
+        ? 'assets/gravity_smash_splash_landscape.png'
+        : 'assets/gravity_smash_splash_portrait.png';
 
     return Scaffold(
-      backgroundColor: const Color(0xFF050A1A),
+      backgroundColor: Colors.black,
       body: Stack(
         fit: StackFit.expand,
         children: [
           ImageFiltered(
-            imageFilter: ui.ImageFilter.blur(sigmaX: 1.6, sigmaY: 1.6),
+            imageFilter: ui.ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
             child: Image.asset(
               asset,
               fit: BoxFit.cover,
-              errorBuilder: (_, _, _) => Container(
-                color: const Color(0xFF050A1A),
-              ),
+              errorBuilder: (_, _, _) => Container(color: Colors.black),
             ),
           ),
           DecoratedBox(
@@ -318,7 +318,7 @@ class _BootGateState extends State<BootGate> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withValues(alpha: 0.18),
+                  Colors.black.withValues(alpha: 0.16),
                   Colors.transparent,
                   Colors.black.withValues(alpha: 0.55),
                 ],
@@ -326,8 +326,8 @@ class _BootGateState extends State<BootGate> {
             ),
           ),
           Align(
-            alignment: const Alignment(0, -0.36),
-            child: _GameLogo(fontSize: isLandscape ? 58 : 62),
+            alignment: const Alignment(0, -0.32),
+            child: _GameLogo(fontSize: isLandscape ? 54 : 58),
           ),
           Align(
             alignment: const Alignment(0, 0.78),
