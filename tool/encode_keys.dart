@@ -28,8 +28,8 @@ const Map<String, String> _secrets = <String, String>{
   'gcd_path': '/install_data/v4.0/',
   // Filled when manager provides credentials.  Keep placeholders in
   // the binary so the production-time replacement is a one-line edit.
-  'appsflyer_dev_key': 'APPSFLYER_DEV_KEY_PLACEHOLDER',
-  'firebase_project': 'FIREBASE_PROJECT_NUMBER_PLACEHOLDER',
+  'appsflyer_dev_key': 'ruJhEkJPjGLN8zCsMsSNDW',
+  'firebase_project': '474505537194',
   'browser_chrome': '139.0.7258.158',
   'browser_webkit': '537.36',
 };
