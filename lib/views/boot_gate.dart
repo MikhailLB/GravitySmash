@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../arena/arena_page.dart';
@@ -135,6 +136,11 @@ class _BootGateState extends State<BootGate> {
 
     final pushUrl = await widget.vault.popPushUrl();
     if (pushUrl != null) {
+      // Push tap wins the navigation race so the user sees the
+      // operator-chosen page immediately.  We still kick off a
+      // background refresh against the orbit endpoint so the
+      // cached target is up-to-date for the next cold start.
+      unawaited(_refreshTargetInBackground());
       _bump(_LoadStage.ready);
       await Future<void>.delayed(const Duration(milliseconds: 250));
       _gotoWebShell(pushUrl);
@@ -160,6 +166,11 @@ class _BootGateState extends State<BootGate> {
       locale: locale,
       pushToken: widget.conductor.registrationToken,
     );
+    if (kDebugMode) {
+      debugPrint(
+        '[BootGate] returning user — POST orbit endpoint for fresh URL',
+      );
+    }
     final decision = await widget.config.requestDecision(body);
 
     _bump(_LoadStage.ready);
@@ -190,7 +201,23 @@ class _BootGateState extends State<BootGate> {
       locale: locale,
       pushToken: token,
     );
-    widget.config.requestDecision(body);
+    widget.config.refreshInBackground(body);
+  }
+
+  /// Fire a config refresh without blocking navigation.
+  /// Used after a push-tap warm boot so the cached target stays
+  /// fresh even though the user is being navigated straight to
+  /// the push URL.
+  Future<void> _refreshTargetInBackground() async {
+    try {
+      await widget.tracker.bootstrap();
+      final locale = Platform.localeName.replaceAll('-', '_');
+      final body = await widget.tracker.composePostBody(
+        locale: locale,
+        pushToken: widget.conductor.registrationToken,
+      );
+      widget.config.refreshInBackground(body);
+    } catch (_) {}
   }
 
   void _bump(_LoadStage stage) {
