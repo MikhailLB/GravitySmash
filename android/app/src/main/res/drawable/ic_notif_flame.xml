@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gravity Smash push notification icon — stylised flame silhouette.
+     Monochrome (white-on-transparent) so it conforms to Android's
+     notification icon tinting rules. Vector path is hand-tuned to
+     be visually distinct from the launcher icon. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12.5,1.6 C12.9,3.4 12.6,5.0 11.8,6.5 C11.0,8.0 9.7,9.3 8.7,10.7 C7.6,12.2 7.0,13.9 7.3,15.5 C7.5,16.4 8.0,17.1 8.6,17.6 C8.0,17.3 7.4,16.9 6.9,16.4 C5.5,15.0 4.9,12.9 5.6,11.1 C4.0,12.6 3.0,14.8 3.3,16.9 C3.5,19.0 4.9,20.9 6.9,21.7 C9.3,22.7 12.4,22.5 14.6,21.1 C16.4,20.0 17.6,18.2 18.0,16.2 C18.5,13.8 17.6,11.3 16.1,9.4 C15.5,8.6 14.8,7.8 14.6,6.8 C14.4,5.9 14.7,5.0 15.2,4.2 C14.0,3.2 13.2,2.4 12.5,1.6 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11.5,12.8 C11.8,13.7 11.4,14.7 10.7,15.3 C10.2,15.8 9.5,16.0 9.0,16.6 C8.6,17.2 8.8,18.0 9.3,18.4 C9.9,18.9 10.7,19.0 11.4,18.9 C12.4,18.7 13.2,17.9 13.4,16.9 C13.7,15.7 13.0,14.5 12.3,13.7 C12.0,13.4 11.8,13.1 11.5,12.8 Z"/>
+</vector>
