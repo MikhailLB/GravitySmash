@@ -363,6 +363,7 @@ class _OrbitWebShellState extends State<OrbitWebShell>
   Widget build(BuildContext context) {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
+    final vp = MediaQuery.of(context).viewPadding;
 
     return PopScope(
       canPop: false,
@@ -376,14 +377,13 @@ class _OrbitWebShellState extends State<OrbitWebShell>
           fit: StackFit.expand,
           children: [
             Padding(
-              // Apply status bar height in portrait; none in landscape
-              // (immersive mode hides the status bar in landscape).
-              // Exactly matches the AdventureRoad content_screen pattern.
-              padding: EdgeInsets.only(
-                top: isLandscape
-                    ? 0
-                    : MediaQuery.of(context).viewPadding.top,
-              ),
+              // Portrait: top (status bar) + bottom (nav bar / gesture zone).
+              // Landscape: left + right (camera cutout on the side).
+              // In landscape immersive mode hides top/bottom system bars,
+              // so only side cutouts need compensation.
+              padding: isLandscape
+                  ? EdgeInsets.only(left: vp.left, right: vp.right)
+                  : EdgeInsets.only(top: vp.top, bottom: vp.bottom),
               child: WebViewWidget(controller: _ctrl),
             ),
             if (_busy)
