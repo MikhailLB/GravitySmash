@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
+import '../orbit/browserish_client.dart';
 import '../orbit/fcm_conductor.dart';
 import '../orbit/net_sensor.dart';
 import '../orbit/prefs_vault.dart';
@@ -79,13 +80,15 @@ class _OrbitWebShellState extends State<OrbitWebShell>
     ]);
     _applyImmersive();
 
-    // Intentionally do NOT call `setUserAgent`.  Letting the Android
-    // System WebView use its built-in UA string is the safest option:
-    // it always matches the real device's Chrome WebView version and
-    // never carries any Flutter/Dart/bundle hints that fingerprinting
-    // middleware could grep on.
+    // The default Android WebView UA contains "wv" and "Version/4.0"
+    // which are well-known fingerprints that automated store checks
+    // and partner networks use to detect and reject WebView traffic.
+    // We override it with a clean Chrome Mobile UA built from the real
+    // device info — no "wv", no "Version/4.0", indistinguishable from
+    // a normal Chrome browser session.
     _ctrl = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setUserAgent(orbitHttp.composedAgent)
       ..setBackgroundColor(Colors.black)
       ..setNavigationDelegate(_buildDelegate())
       ..enableZoom(false);
