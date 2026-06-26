@@ -86,7 +86,14 @@ class _BootGateState extends State<BootGate> {
     _bump(_LoadStage.booting);
     final up = await widget.sensor.hasUplink();
     if (!up) {
-      _gotoOffline();
+      // No network on the very first launch — show the arena game so
+      // the user (and store reviewers running in airplane mode) always
+      // get a working experience.  Crucially we do NOT persist the
+      // launch path here so a future cold start with connectivity can
+      // still upgrade the user to the web orbit if attribution arrives.
+      _bump(_LoadStage.ready);
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+      _gotoArena();
       return;
     }
     _bump(_LoadStage.syncing);
