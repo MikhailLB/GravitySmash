@@ -1,7 +1,7 @@
 name: gravitysmash
 description: "Gravity Smash — neon orbit arcade."
 publish_to: 'none'
-version: 1.0.1+3
+version: 1.0.1+4
 
 environment:
   sdk: ^3.12.2
